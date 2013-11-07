@@ -5,8 +5,8 @@ from django.conf.urls import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'slideshow.slideshow_views.photos'),
-    url(r'^photos/$', 'slideshow.slideshow_views.photos'),
+    url(r'^$', 'slideshow.slideshow_views.photo_albums'),
+    url(r'^photos/$', 'slideshow.slideshow_views.photo_albums'),
     url(r'^photos/tn/(?P<album>[a-zA-Z0-9_-]+)/(?P<image>[a-zA-Z0-9_.-]+)$', 'slideshow.slideshow_views.renderThumbnail'),
-    url(r'^photos/view/(?P<album>[a-zA-Z0-9_-]+)/$', 'slideshow.slideshow_views.album'),
+    url(r'^photos/view/(?P<album>[a-zA-Z0-9_-]+)/$', 'slideshow.slideshow_views.photo_viewer'),
 )

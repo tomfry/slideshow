@@ -8,24 +8,26 @@ def index(request):
     return render_to_response("index.html")
 
 
-def photos(request):
-    photodir = (os.path.join(os.path.dirname(__file__), '..', 'photos').replace('\\','/'),)
+def photo_albums(request):
+    #This is the view to list the photo albums
 
-    filelist = createFileList(photodir[0])
-    testlist = [ "test", "new" ]
-    d = dict (testlist=testlist, filelist=filelist, user=request.user)
-    return render_to_response(	"photo_album_list.html", d)
 
+    # Get a list of directories (photo albums) in the photo directory
+    photoDirectory = os.path.join(os.path.split(os.path.dirname(__file__))[0], 'photos')
+    filelist = createFileDirList(photoDirectory)
+
+    #Create a dict and pass to template - uses javascript to create the
+    d = dict (filelist=filelist)
+    return render_to_response("photo_album_list.html", d)
 
 def renderThumbnail(request, album, image):
+    #Creates a thumbnail for each image
+    # - To reduce overhead these could be rendered in advance but for small albums it is fine to do it on the fly
     try:
         if not image.endswith('.jpg'):
             image = str(image)+".jpg"
-        print image
 
         imagefile = os.path.join(os.path.dirname(__file__),  '..', 'photos', album, image)
-
-        print imagefile
         im = PImage.open(imagefile)
 
         im.thumbnail((300,100), PImage.ANTIALIAS)
@@ -33,29 +35,23 @@ def renderThumbnail(request, album, image):
         response = HttpResponse(mimetype="image/png")
         im.save(response, "PNG")
         return response
-    except :
+    except:
         return HttpResponse(status=404)
 
-def album(request, album):
-    #return HttpResponse("You're looking at album %s." % album)
+def photo_viewer(request, album):
+    #This is the view for the photo viewer - aka the slideshow
+
     albumDirectory = os.path.join(os.path.dirname(__file__), '..', 'photos', album)
-
-    photoList = createFileList(albumDirectory)
-
+    photoList = createFileDirList(albumDirectory)
     d = dict (album=album, photoList = photoList)
-
     return render_to_response("photo_viewer.html", d)
 
-def createFileList(directory):
 
-    #photodir = (os.path.join(os.path.dirname(__file__),  '..', 'photos').replace('\\','/'),)
-    print directory
+def createFileDirList(directory):
+    # Simple function to return a list of files of directories within a directory
 
     dirList = []
-    #for file in os.listdir('/home/djangouser/swallowsbottom/photos'):
     for file in os.listdir(directory):
-        print file
-        #if os.path.isdir(os.path.join(photodir[0], file)):
         if not file.startswith('.'):
             dirList.append(file)
     return dirList
