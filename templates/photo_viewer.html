@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block script %}
+<script>
+    var y = window.setInterval("switchBg()", 4000);
+    var i = 1;
+    var photoLength = {{  photoList|length }};
+    var photo = new Array();
+
+    {% for photo in photoList %}
+    photo[{{ forloop.counter0 }}] = "{{ photo }}";{% endfor %}
+
+
+    for(j=1;j<photoLength;j++){
+        $('<img />').attr('src',"/site/photos/{{ album }}/"+photo[j]).appendTo('#photo').css('#display','none');
+    }
+
+    function switchBg()
+    {
+        backgroundValue = "url(/site/photos/{{ album }}/"+photo[i]+") no-repeat center center fixed";
+
+        //$("html").css("background", backgroundValue).css("-webkit-background-size", "auto,cover,cover").css("-moz-background-size", "auto,cover,cover").css("-o-background-size", "auto,cover,cover").css("background-size", "auto,cover,cover");
+
+        $("#photo").fadeOut('slow',function(){
+            $(this).css("background", backgroundValue).css("-webkit-background-size", "auto,cover,cover").css("-moz-background-size", "auto,cover,cover").css("-o-background-size", "auto,cover,cover").css("background-size", "auto,cover,cover").fadeIn('slow');
+        })
+
+        $("#text").hide();
+
+        var src1 = "/photos/tn/{{ album }}/"+photo[i];
+        var src2 = "/photos/tn/{{ album }}/"+photo[i+1];
+        var src3 = "/photos/tn/{{ album }}/"+photo[i+2];
+        var src4 = "/photos/tn/{{ album }}/"+photo[i+3];
+
+        if (i == photoLength-1)
+        {
+            src2 = "/photos/tn/{{ album }}/"+photo[0];
+            src3 = "";
+            src4 = "";
+            $("#tn_3").hide();
+            $("#tn_4").hide();
+        }
+        else if (i+1 == photoLength-1)
+        {
+            src3 = "/photos/tn/{{ album }}/"+photo[0];
+            src4 = "";
+            $("#tn_4").hide();
+        }
+        else if (i+2 == photoLength-1)
+        {
+            src4 = "/photos/tn/{{ album }}/"+photo[0];
+        }
+
+        $("#tn_1").attr("src",src1);
+        $("#tn_2").attr("src",src2);
+        $("#tn_3").attr("src",src3);
+        $("#tn_4").attr("src",src4);
+
+        if (i == photoLength-1){
+            i=0;
+            $("#tn_3").show();
+            $("#tn_4").show();
+
+        }else{
+            i++;
+        }
+
+    }
+
+$(document).ready(function() {
+    switchBg();
+
+    $( "#pause" ).click(function() {
+         y = window.clearInterval(y);
+        $( "#pause" ).css("display","none");
+        $( "#play" ).css("display","");
+    });
+    $( "#play" ).click(function() {
+         y = window.setInterval("switchBg()", 4000);
+        $( "#play" ).css("display","none");
+        $( "#pause" ).css("display","");
+    });
+    $( "#left" ).click(function() {
+        if (i > 2) {
+            i = i - 2;
+        }
+        else {
+            i = i - 1;
+        }
+        switchBg();
+    });
+
+    $( "#right" ).click(function() {
+         switchBg();
+    });
+});
+</script>
+
+{% endblock %}
+
+
+{% block content %}
+        <div id="navigate"> </div>
+        <div id="text">{{ album }}</div>
+        <div id="thumbnails">
+            <div id="left" class="navigate">&lt;</div>
+            <div id="pause" class="navigate">||</div><div id="play" style="display:none" class="navigate">►</div>
+            <div id="thumbnail"><img id="tn_1" src=""/></div>
+            <div id="thumbnail"><img id="tn_2" src=""/></div>
+            <div id="thumbnail"><img id="tn_3" src=""/></div>
+            <div id="thumbnail"><img id="tn_4" src=""/></div>
+            <div id="right" class="navigate">&gt;</div>
+        </div>
+ {% endblock %}

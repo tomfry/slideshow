@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>
+        {% block title %}Index{% endblock %}
+    </title>
+    <link rel="stylesheet" type="text/css" href="/site/css/style.css">
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+
+    {% block script %}
+    <script>
+        var y = window.setInterval("switchBg()", 8000);
+		var i = 1;
+		var topOut = 5;
+
+		for(j=1;j<=5;j++){
+			$('<img />').attr('src',"/site/images/bg"+j+".jpg").appendTo('#photo').css('display','none');
+		}
+		function switchBg()
+		{
+			backgroundValue = "url(/site/images/bg"+i+".jpg) no-repeat center center fixed";
+            $("#photo").fadeOut('slow',function(){
+                $(this).css("background", backgroundValue).css("-webkit-background-size", "auto,cover,cover").css("-moz-background-size", "auto,cover,cover").css("-o-background-size", "auto,cover,cover").css("background-size", "auto,cover,cover").fadeIn('slow');
+            })
+
+			if (i == topOut){
+				i=1;
+			}else{
+				i++;
+			}
+		}
+$(document).ready(function() {
+    switchBg();
+});
+</script>
+
+    {% endblock %}
+</head>
+
+<body>
+    <div id="photo"></div>
+    <div id="wrapper">
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>

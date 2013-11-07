@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+    {% block title %}Photo Albums{% endblock %}
+
+    {% block content %}
+        <div id="signpost">
+            <div id="text">Photos</div>
+            <div id="subtext">Albums:</div>
+            {% for album in filelist %}
+                <div id="subsubtext"><li><a href="/photos/view/{{ album }}">{{ album }}</a></li></div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+
